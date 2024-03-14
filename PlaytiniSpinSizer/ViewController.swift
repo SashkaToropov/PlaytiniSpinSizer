@@ -7,9 +7,20 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
     
-    private var circleSize = 70.0
+    var circleSize = 100.0 {
+        didSet {
+            if circleSize > maxCircleSize {
+                circleSize = 150
+            } else if circleSize < minCircleSize {
+                circleSize = 50
+            }
+        }
+    }
+    
+    private let minCircleSize = 50.0
+    private let maxCircleSize = 150.0
     
     private var obstacleSpeed: CGFloat = 100.0
     private let obstacleHeight: CGFloat = 20.0
@@ -36,15 +47,56 @@ class ViewController: UIViewController {
         return view
     }()
     
+    private lazy var increaseButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("+", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = #colorLiteral(red: 0.5240610838, green: 0.5406919718, blue: 0.2848856449, alpha: 1)
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.borderWidth = 1.0
+        button.layer.cornerRadius = 10
+        
+        let action = UIAction { [weak self] _ in
+            self?.increaseButtonTapped()
+        }
+        button.addAction(action, for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var decreaseButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("-", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = #colorLiteral(red: 0.5240610838, green: 0.5406919718, blue: 0.2848856449, alpha: 1)
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.borderWidth = 1.0
+        button.layer.cornerRadius = 10
+        
+        let action = UIAction { [weak self] _ in
+            self?.decreaseButtonTapped()
+        }
+        button.addAction(action, for: .touchUpInside)
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .darkGray
+        
+        addSubviews()
+        
+        setConstraints()
+        
+        startBallRotation()
+        startObstacleMovement()
+    }
+    
+    private func addSubviews() {
         view.addSubview(ballImageView)
         view.addSubview(topObstacleView)
         view.addSubview(bottomObstacleView)
-        
-        view.backgroundColor = .darkGray
-        startBallRotation()
-        startObstacleMovement()
+        view.addSubview(increaseButton)
+        view.addSubview(decreaseButton)
     }
     
     private func startBallRotation() {
@@ -73,6 +125,41 @@ class ViewController: UIViewController {
         }
         
         moveObstacleAnimation.startAnimation()
+    }
+    
+    private func increaseButtonTapped() {
+            circleSize += 10
+            updateCircleView()
+            print(circleSize)
+    }
+    
+    private func decreaseButtonTapped() {
+            circleSize -= 10
+            updateCircleView()
+    }
+    
+    private func updateCircleView() {
+        ballImageView.frame = CGRect(x: 0, y: 0, width: circleSize, height: circleSize)
+        ballImageView.center = view.center
+        ballImageView.layer.cornerRadius = circleSize/2
+    }
+}
+
+extension ViewController {
+    private func setConstraints() {
+        [increaseButton, decreaseButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                increaseButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+                increaseButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 50),
+                increaseButton.widthAnchor.constraint(equalToConstant: 80),
+                
+                decreaseButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+                decreaseButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -50),
+                decreaseButton.widthAnchor.constraint(equalToConstant: 80)
+            ])
+        }
     }
 }
 
