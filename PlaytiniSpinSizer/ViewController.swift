@@ -26,6 +26,13 @@ final class ViewController: UIViewController {
     
     private var collisionCheckTimer: Timer?
     
+    private lazy var collisionCountLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Кількість зіткнень: \(collisionCount)"
+        label.textColor = .white
+        return label
+    }()
+    
     private lazy var ballImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.frame = CGRect(x: 0, y: 0, width: circleSize, height: circleSize)
@@ -97,6 +104,7 @@ final class ViewController: UIViewController {
     }
     
     private func addSubviews() {
+        view.addSubview(collisionCountLabel)
         view.addSubview(ballImageView)
         view.addSubview(topObstacleView)
         view.addSubview(bottomObstacleView)
@@ -133,14 +141,13 @@ final class ViewController: UIViewController {
     }
     
     private func increaseButtonTapped() {
-            circleSize += 10
-            updateCircleView()
-            print(circleSize)
+        circleSize += 10
+        updateCircleView()
     }
     
     private func decreaseButtonTapped() {
-            circleSize -= 10
-            updateCircleView()
+        circleSize -= 10
+        updateCircleView()
     }
     
     private func updateCircleView() {
@@ -154,17 +161,18 @@ final class ViewController: UIViewController {
               let bottomObstacleFrame = bottomObstacleView.layer.presentation()?.frame else {
             return
         }
-
+        
         checkCollision(with: topObstacleFrame, for: topObstacleView)
         checkCollision(with: bottomObstacleFrame, for: bottomObstacleView)
     }
-
+    
     private func checkCollision(with obstacleFrame: CGRect, for obstacleView: UIView) {
         if obstacleFrame.intersects(ballImageView.frame) {
             obstacleView.frame.origin.x = view.bounds.maxX + obstacleView.bounds.width
             collisionCount += 1
+            collisionCountLabel.text = "Кількість зіткнень: \(collisionCount)"
             UIDevice.vibrate()
-
+            
             if collisionCount >= 5 {
                 collisionCount = 0
                 showAlert()
@@ -185,16 +193,20 @@ final class ViewController: UIViewController {
     
     private func resetGame() {
         collisionCount = 0
+        collisionCountLabel.text = "Кількість зіткнень: \(collisionCount)"
         updateCircleView()
     }
 }
 
-extension ViewController {
+private extension ViewController {
     private func setConstraints() {
-        [increaseButton, decreaseButton].forEach {
+        [increaseButton, decreaseButton, collisionCountLabel].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             
             NSLayoutConstraint.activate([
+                collisionCountLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+                collisionCountLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                
                 increaseButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
                 increaseButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 50),
                 increaseButton.widthAnchor.constraint(equalToConstant: 80),
