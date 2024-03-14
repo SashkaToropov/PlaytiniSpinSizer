@@ -9,7 +9,7 @@ import UIKit
 
 final class ViewController: UIViewController {
     
-    var circleSize = 100.0 {
+    private var circleSize = 100.0 {
         didSet {
             if circleSize > Constants.maxCircleSize.rawValue {
                 circleSize = Constants.maxCircleSize.rawValue
@@ -167,8 +167,25 @@ final class ViewController: UIViewController {
 
             if collisionCount >= 5 {
                 collisionCount = 0
+                showAlert()
             }
         }
+    }
+    
+    private func showAlert() {
+        let alert = UIAlertController(title: "Зіткнення", message: "Ви зіткнулися 5 разів. Бажаєте перезапустити гру?", preferredStyle: .alert)
+        
+        let restartAction = UIAlertAction(title: "Перезапустити", style: .default) { _ in
+            self.resetGame()
+        }
+        alert.addAction(restartAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func resetGame() {
+        collisionCount = 0
+        updateCircleView()
     }
 }
 
