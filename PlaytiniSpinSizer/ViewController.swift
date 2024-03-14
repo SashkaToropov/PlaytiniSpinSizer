@@ -11,19 +11,20 @@ final class ViewController: UIViewController {
     
     var circleSize = 100.0 {
         didSet {
-            if circleSize > maxCircleSize {
-                circleSize = 150
-            } else if circleSize < minCircleSize {
-                circleSize = 50
+            if circleSize > Constants.maxCircleSize.rawValue {
+                circleSize = Constants.maxCircleSize.rawValue
+            } else if circleSize < Constants.minCircleSize.rawValue {
+                circleSize = Constants.minCircleSize.rawValue
             }
         }
     }
     
-    private let minCircleSize = 50.0
-    private let maxCircleSize = 150.0
-    
     private var obstacleSpeed: CGFloat = 100.0
     private let obstacleHeight: CGFloat = 20.0
+    
+    private var collisionCount = 0
+    
+    private var collisionCheckTimer: Timer?
     
     private lazy var ballImageView: UIImageView = {
         let imageView = UIImageView()
@@ -89,6 +90,10 @@ final class ViewController: UIViewController {
         
         startBallRotation()
         startObstacleMovement()
+        
+        collisionCheckTimer = Timer.scheduledTimer(withTimeInterval: 1/60.0, repeats: true) { [self] _ in
+            self.checkForCollisions()
+        }
     }
     
     private func addSubviews() {
@@ -141,7 +146,29 @@ final class ViewController: UIViewController {
     private func updateCircleView() {
         ballImageView.frame = CGRect(x: 0, y: 0, width: circleSize, height: circleSize)
         ballImageView.center = view.center
-        ballImageView.layer.cornerRadius = circleSize/2
+        ballImageView.layer.cornerRadius = circleSize / 2
+    }
+    
+    private func checkForCollisions() {
+        guard let topObstacleFrame = topObstacleView.layer.presentation()?.frame,
+              let bottomObstacleFrame = bottomObstacleView.layer.presentation()?.frame else {
+            return
+        }
+
+        checkCollision(with: topObstacleFrame, for: topObstacleView)
+        checkCollision(with: bottomObstacleFrame, for: bottomObstacleView)
+    }
+
+    private func checkCollision(with obstacleFrame: CGRect, for obstacleView: UIView) {
+        if obstacleFrame.intersects(ballImageView.frame) {
+            obstacleView.frame.origin.x = view.bounds.maxX + obstacleView.bounds.width
+            collisionCount += 1
+            UIDevice.vibrate()
+
+            if collisionCount >= 5 {
+                collisionCount = 0
+            }
+        }
     }
 }
 
@@ -154,10 +181,12 @@ extension ViewController {
                 increaseButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
                 increaseButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 50),
                 increaseButton.widthAnchor.constraint(equalToConstant: 80),
+                increaseButton.heightAnchor.constraint(equalToConstant: 50),
                 
                 decreaseButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
                 decreaseButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -50),
-                decreaseButton.widthAnchor.constraint(equalToConstant: 80)
+                decreaseButton.widthAnchor.constraint(equalToConstant: 80),
+                decreaseButton.heightAnchor.constraint(equalToConstant: 50)
             ])
         }
     }

@@ -12,6 +12,8 @@
 		77EBCC8A2BA1FEEF0068457A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EBCC892BA1FEEF0068457A /* ViewController.swift */; };
 		77EBCC8F2BA1FEF10068457A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 77EBCC8E2BA1FEF10068457A /* Assets.xcassets */; };
 		77EBCC922BA1FEF10068457A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 77EBCC902BA1FEF10068457A /* LaunchScreen.storyboard */; };
+		77EBCCBA2BA399DA0068457A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EBCCB92BA399DA0068457A /* Constants.swift */; };
+		77EBCCBC2BA39BE30068457A /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EBCCBB2BA39BE30068457A /* UIDevice+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		77EBCC8E2BA1FEF10068457A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		77EBCC912BA1FEF10068457A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		77EBCC932BA1FEF10068457A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		77EBCCB92BA399DA0068457A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		77EBCCBB2BA39BE30068457A /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +61,8 @@
 				77EBCC852BA1FEEF0068457A /* AppDelegate.swift */,
 				77EBCC872BA1FEEF0068457A /* SceneDelegate.swift */,
 				77EBCC892BA1FEEF0068457A /* ViewController.swift */,
+				77EBCCBB2BA39BE30068457A /* UIDevice+Extensions.swift */,
+				77EBCCB92BA399DA0068457A /* Constants.swift */,
 				77EBCC8E2BA1FEF10068457A /* Assets.xcassets */,
 				77EBCC902BA1FEF10068457A /* LaunchScreen.storyboard */,
 				77EBCC932BA1FEF10068457A /* Info.plist */,
@@ -137,6 +143,8 @@
 				77EBCC8A2BA1FEEF0068457A /* ViewController.swift in Sources */,
 				77EBCC862BA1FEEF0068457A /* AppDelegate.swift in Sources */,
 				77EBCC882BA1FEEF0068457A /* SceneDelegate.swift in Sources */,
+				77EBCCBC2BA39BE30068457A /* UIDevice+Extensions.swift in Sources */,
+				77EBCCBA2BA399DA0068457A /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
