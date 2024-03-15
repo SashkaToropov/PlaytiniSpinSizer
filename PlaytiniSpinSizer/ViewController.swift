@@ -19,10 +19,11 @@ final class ViewController: UIViewController {
         }
     }
     
-    private var obstacleSpeed: CGFloat = 100.0
-    private let obstacleHeight: CGFloat = 20.0
-    
-    private var collisionCount = 0
+    private var collisionCount = 0 {
+        didSet {
+            collisionCountLabel.text = "Кількість зіткнень: \(collisionCount)"
+        }
+    }
     
     private var collisionCheckTimer: Timer?
     
@@ -44,13 +45,13 @@ final class ViewController: UIViewController {
     }()
     
     private lazy var topObstacleView: UIImageView = {
-        let view = UIImageView(frame: CGRect(x: view.bounds.maxX, y: 0, width: 150, height: obstacleHeight))
+        let view = UIImageView(frame: CGRect(x: view.bounds.maxX, y: 0, width: 150, height: Constants.obstacleHeight.rawValue))
         view.image = UIImage(named: "obstacle")
         return view
     }()
     
     private lazy var bottomObstacleView: UIImageView = {
-        let view = UIImageView(frame: CGRect(x: view.bounds.maxX, y: view.bounds.maxY - obstacleHeight, width: 150, height: obstacleHeight))
+        let view = UIImageView(frame: CGRect(x: view.bounds.maxX, y: view.bounds.maxY - Constants.obstacleHeight.rawValue, width: 150, height: Constants.obstacleHeight.rawValue))
         view.image = UIImage(named: "obstacle")
         return view
     }()
@@ -98,8 +99,8 @@ final class ViewController: UIViewController {
         startBallRotation()
         startObstacleMovement()
         
-        collisionCheckTimer = Timer.scheduledTimer(withTimeInterval: 1/60.0, repeats: true) { [self] _ in
-            self.checkForCollisions()
+        collisionCheckTimer = Timer.scheduledTimer(withTimeInterval: 1/60.0, repeats: true) { [weak self] _ in
+            self?.checkForCollisions()
         }
     }
     
@@ -122,19 +123,19 @@ final class ViewController: UIViewController {
         topObstacleView.frame.origin.x = view.bounds.maxX
         bottomObstacleView.frame.origin.x = view.bounds.maxX
         
-        let topObstacleY = CGFloat.random(in: obstacleHeight...(view.bounds.height / 2 - obstacleHeight))
-        let bottomObstacleY = CGFloat.random(in: (view.bounds.height / 2 + obstacleHeight)...(view.bounds.height - obstacleHeight))
+        let topObstacleY = CGFloat.random(in: (Constants.obstacleHeight.rawValue + Constants.obstaclePadding.rawValue)...(view.bounds.height / 2 - Constants.obstacleHeight.rawValue))
+        let bottomObstacleY = CGFloat.random(in: (view.bounds.height / 2 + Constants.obstacleHeight.rawValue)...(view.bounds.height - Constants.obstacleHeight.rawValue - Constants.obstaclePadding.rawValue))
         
         topObstacleView.frame.origin.y = topObstacleY
         bottomObstacleView.frame.origin.y = bottomObstacleY
         
-        let moveObstacleAnimation = UIViewPropertyAnimator(duration: Double(view.bounds.width / obstacleSpeed), curve: .linear) {
+        let moveObstacleAnimation = UIViewPropertyAnimator(duration: Double(view.bounds.width / Constants.obstacleSpeed.rawValue), curve: .linear) {
             self.topObstacleView.frame.origin.x = -self.topObstacleView.bounds.width
             self.bottomObstacleView.frame.origin.x = -self.bottomObstacleView.bounds.width
         }
         
-        moveObstacleAnimation.addCompletion { [self] _ in
-            self.startObstacleMovement()
+        moveObstacleAnimation.addCompletion { [weak self] _ in
+            self?.startObstacleMovement()
         }
         
         moveObstacleAnimation.startAnimation()
@@ -170,7 +171,6 @@ final class ViewController: UIViewController {
         if obstacleFrame.intersects(ballImageView.frame) {
             obstacleView.frame.origin.x = view.bounds.maxX + obstacleView.bounds.width
             collisionCount += 1
-            collisionCountLabel.text = "Кількість зіткнень: \(collisionCount)"
             UIDevice.vibrate()
             
             if collisionCount >= 5 {
@@ -193,7 +193,6 @@ final class ViewController: UIViewController {
     
     private func resetGame() {
         collisionCount = 0
-        collisionCountLabel.text = "Кількість зіткнень: \(collisionCount)"
         updateCircleView()
     }
 }
